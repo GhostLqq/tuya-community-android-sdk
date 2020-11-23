@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.tuya.scene.business.myapplication"
+        applicationId "com.community.business.sdk.demo"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
