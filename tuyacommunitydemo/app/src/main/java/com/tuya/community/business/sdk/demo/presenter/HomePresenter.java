@@ -89,8 +89,8 @@ public class HomePresenter {
             ToastUtil.shortToast(mContext, "请先获取家庭id和详情");
         }
     }
-    public void getPropertyList(String projectId,String rooid){
-        TuyaCommunitySDK.getCommunityPropertyInstance().getRecentAnnounceList(projectId, rooid, new ITuyaCommunityResultCallback<ArrayList<CommAnnounceResponseBean>>() {
+    public void getPropertyList(String projectId,String spaceTreeId){
+        TuyaCommunitySDK.getCommunityPropertyInstance().getRecentAnnounceList(projectId, spaceTreeId, new ITuyaCommunityResultCallback<ArrayList<CommAnnounceResponseBean>>() {
             @Override
             public void onSuccess(ArrayList<CommAnnounceResponseBean> commAnnounceResponseBeans) {
                mView.showPropertyList(commAnnounceResponseBeans);
