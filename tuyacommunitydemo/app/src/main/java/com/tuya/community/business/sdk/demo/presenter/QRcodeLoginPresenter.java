@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.tuya.community.business.sdk.demo.activity.MainActivity;
 import com.tuya.community.business.sdk.demo.utils.QRUtils;
 import com.tuya.community.business.sdk.demo.view.IQRcodeLoginView;
 import com.tuya.community.sdk.android.TuyaCommunitySDK;
+
 
 /**
  * create by nielev on 2020/11/11
@@ -118,6 +120,8 @@ public class QRcodeLoginPresenter implements Handler.Callback {
                 }
                 break;
             case GET_LOOP_TOKEN_SUCCESS:
+                //登录
+//                TuyaWrapper.onLogin();
                 stopLoop();
                 gotoHome();
                 break;
@@ -133,8 +137,11 @@ public class QRcodeLoginPresenter implements Handler.Callback {
 
     public void checkLogin() {
         if(TuyaCommunitySDK.getCommunityUserInstance().isLogin()){
+            //登录
+//            TuyaWrapper.onLogin();
             stopLoop();
             gotoHome();
         }
+
     }
 }

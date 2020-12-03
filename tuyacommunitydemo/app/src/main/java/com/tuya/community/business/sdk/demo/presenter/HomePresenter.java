@@ -3,20 +3,22 @@ package com.tuya.community.business.sdk.demo.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.transition.Scene;
 
 import com.tuya.community.android.callback.ITuyaCommunityResultCallback;
-import com.tuya.community.android.home.api.ITuyaCommunityHome;
 import com.tuya.community.android.home.bean.CommunityHomeBean;
-import com.tuya.community.android.user.bean.CommunityUser;
+import com.tuya.community.android.property.bean.CommAnnounceResponseBean;
 import com.tuya.community.business.sdk.demo.activity.CommonDeviceDebugActivity;
 import com.tuya.community.business.sdk.demo.activity.PushActivity;
 import com.tuya.community.business.sdk.demo.activity.SceneActivity;
+import com.tuya.community.business.sdk.demo.activity.VisualSpeakActivity;
 import com.tuya.community.business.sdk.demo.utils.ActivityUtils;
 import com.tuya.community.business.sdk.demo.utils.ToastUtil;
+import com.tuya.community.business.sdk.demo.utils.Utils;
 import com.tuya.community.business.sdk.demo.view.IMainView;
 import com.tuya.community.sdk.android.TuyaCommunitySDK;
+import com.tuya.smart.jsbridge.base.webview.WebViewActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.tuya.community.business.sdk.demo.activity.SceneActivity.EXTRA_HOMEID;
@@ -29,7 +31,8 @@ public class HomePresenter {
     private IMainView mView;
     private CommunityHomeBean mDetailHomeBean;
     private long mHomeId;
-
+    public static final String PROJECT_ID = "project_id";
+    public static final String SPACETREE_ID = "spaceTree_Id";
     public HomePresenter(Context context, IMainView activity) {
         mContext = context;
         mView = activity;
@@ -40,6 +43,7 @@ public class HomePresenter {
             @Override
             public void onSuccess(List<CommunityHomeBean> result) {
                 mView.showCommunityHomeBean(result);
+
             }
 
             @Override
@@ -50,12 +54,12 @@ public class HomePresenter {
     }
 
     public void getHomeDetail(long homeId) {
-        CommunityUser user = TuyaCommunitySDK.getCommunityUserInstance().getUser();
         TuyaCommunitySDK.newCommunityHomeInstance(homeId).getCommunityHomeDetail(new ITuyaCommunityResultCallback<CommunityHomeBean>() {
             @Override
             public void onSuccess(CommunityHomeBean result) {
                 mHomeId = result.getHomeId();
                 mView.showDetail(result);
+                Utils.setCurrentHomeId(result.getHomeId());
             }
 
             @Override
@@ -84,5 +88,39 @@ public class HomePresenter {
         } else {
             ToastUtil.shortToast(mContext, "请先获取家庭id和详情");
         }
+    }
+    public void getPropertyList(String projectId,String rooid){
+        TuyaCommunitySDK.getCommunityPropertyInstance().getRecentAnnounceList(projectId, rooid, new ITuyaCommunityResultCallback<ArrayList<CommAnnounceResponseBean>>() {
+            @Override
+            public void onSuccess(ArrayList<CommAnnounceResponseBean> commAnnounceResponseBeans) {
+               mView.showPropertyList(commAnnounceResponseBeans);
+
+
+            }
+
+            @Override
+            public void onError(String s, String s1) {
+                mView.showFailed(s1);
+            }
+        });
+    }
+    public String getPropertyDetailUrl(String announcementId, String communityId){
+       return TuyaCommunitySDK.getCommunityPropertyInstance().getAnnouceDetailWebUrl(announcementId,communityId);
+    }
+    public void openUrl(String url){
+        Intent intent = new Intent(mContext, WebViewActivity.class);
+        intent.putExtra("Uri", url);
+        mContext.startActivity(intent);
+    }
+
+    public String getSmartCallUrl(String projectId,String spaceTreeId){
+       return TuyaCommunitySDK.getCommunitySmartCallInstance().getSmartCallElevatorUrl(projectId, spaceTreeId);
+    }
+
+    public void gotoVisualSpeak(String projectId, String spaceTreeId) {
+        Intent intent = new Intent(mContext, VisualSpeakActivity.class);
+        intent.putExtra(PROJECT_ID, projectId);
+        intent.putExtra(SPACETREE_ID, spaceTreeId);
+        ActivityUtils.startActivity((Activity) mContext, intent, ActivityUtils.ANIMATE_FORWARD, false);
     }
 }

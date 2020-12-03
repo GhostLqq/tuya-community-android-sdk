@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <include layout="@layout/toolbar_top_view"/>
         <Button
             android:id="@+id/btn_home_list"
             android:layout_width="match_parent"
@@ -18,31 +19,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textIsSelectable="true"/>
-        <EditText
-            android:id="@+id/et_homeId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="请输入房屋homeId："/>
-        <Button
-            android:id="@+id/btn_home_detail"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="获取房屋详情"/>
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/et_homeId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="请输入房屋homeId："/>
+            <Button
+                android:id="@+id/btn_home_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="获取房屋详情"/>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tv_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textIsSelectable="true"/>
-        <EditText
-            android:id="@+id/et_devId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="请输入设备devId:"/>
-        <Button
-            android:id="@+id/btn_dev_oprate"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="进入设备操作页面"/>
+            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/et_devId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="请输入设备devId:"/>
+            <Button
+                android:id="@+id/btn_dev_oprate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="进入设备操作页面"/>
+        </LinearLayout>
+
         <Button
             android:id="@+id/btn_scene"
             android:layout_width="match_parent"
@@ -52,7 +65,72 @@
             android:id="@+id/btn_push"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="进入推送设置页面"/>
+            android:text="进入推送功能设置页面"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="项目id    "/>
+            <EditText
+                android:id="@+id/et_projectId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:hint="请输入项目id:"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="房屋id(SpaceTreeId)"/>
+            <EditText
+            android:id="@+id/et_spaceTreeId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="请输入房屋spaceTreeId:"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_property_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="获取公告列表"/>
+
+        <TextView
+            android:id="@+id/tv_property_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/et_announcementId"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="请输入公告标识id:"
+            android:text="" />
+
+        <Button
+            android:id="@+id/btn_property_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="进入公告详情页"/>
+        <Button
+            android:id="@+id/btn_smartcall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="进入智能梯控"/>
+        <Button
+            android:id="@+id/btn_visualspeak"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="云可视对接"/>
+
     </LinearLayout>
 
 </ScrollView>

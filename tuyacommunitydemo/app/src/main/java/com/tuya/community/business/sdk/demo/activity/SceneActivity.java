@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.tuya.community.android.scene.bean.CommunitySceneBean;
@@ -18,7 +20,7 @@ import java.util.List;
 /**
  * create by nielev on 2020/11/18
  */
-public class SceneActivity extends BaseActivity implements View.OnClickListener, ISceneView {
+public class SceneActivity extends BaseActivity implements View.OnClickListener, ISceneView, CompoundButton.OnCheckedChangeListener {
 
     private Button mBtn_scene_list;
     private TextView mTv_scene;
@@ -26,6 +28,9 @@ public class SceneActivity extends BaseActivity implements View.OnClickListener,
     private Button mBtn_exe_scene;
     private ScenePresenter mPresenter;
     public static final String EXTRA_HOMEID = "homeId";
+    private Switch mSwitch_auto;
+    private EditText mEt_auto_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,9 @@ public class SceneActivity extends BaseActivity implements View.OnClickListener,
         mTv_scene = findViewById(R.id.tv_scene);
         mEt_scene_id = findViewById(R.id.et_scene_id);
         mBtn_exe_scene = findViewById(R.id.btn_exe_scene);
+        mEt_auto_id = findViewById(R.id.et_auto_id);
+        mSwitch_auto = findViewById(R.id.switch_auto);
+        mSwitch_auto.setOnCheckedChangeListener(this);
         mBtn_exe_scene.setOnClickListener(this);
     }
 
@@ -61,7 +69,7 @@ public class SceneActivity extends BaseActivity implements View.OnClickListener,
             if(!TextUtils.isEmpty(sceneId)){
                 mPresenter.executeOneClick(sceneId);
             } else {
-                ToastUtil.shortToast(this, "一键执行id不能为空");
+                ToastUtil.shortToast(this, "请输入一键执行id");
             }
 
         }
@@ -79,5 +87,15 @@ public class SceneActivity extends BaseActivity implements View.OnClickListener,
             s.append("第一个自动化名称和id：").append(automation.get(0).getName()).append(",").append(automation.get(0).getId()).append("\n");
         }
         mTv_scene.setText(s.toString());
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        String sceneId = mEt_auto_id.getText().toString();
+        if(!TextUtils.isEmpty(sceneId)){
+            mPresenter.enableAuto(sceneId, isChecked);
+        } else {
+            ToastUtil.shortToast(this, "请输入自动化id");
+        }
     }
 }

@@ -11,9 +11,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tuya.community.android.callback.ITuyaCommunityCallback;
+import com.tuya.community.android.user.api.ITuyaCommunityUser;
 import com.tuya.community.business.sdk.demo.R;
 import com.tuya.community.business.sdk.demo.presenter.QRcodeLoginPresenter;
 import com.tuya.community.business.sdk.demo.view.IQRcodeLoginView;
+import com.tuya.community.sdk.android.TuyaCommunitySDK;
 
 /**
  * create by nielev on 2020/11/11
@@ -38,6 +41,7 @@ public class QrcodeLoginActivity extends AppCompatActivity implements IQRcodeLog
         mPresenter = new QRcodeLoginPresenter(mContext, this);
         //检查是否已经登录
         mPresenter.checkLogin();
+
     }
 
 

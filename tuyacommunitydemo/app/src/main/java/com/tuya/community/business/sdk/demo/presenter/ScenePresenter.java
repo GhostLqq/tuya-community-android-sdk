@@ -51,11 +51,25 @@ public class ScenePresenter {
                     ToastUtil.shortToast(mContext, errorMessage);
                 }
             });
+
         }
 
     }
 
     public void executeOneClick(String sceneId) {
+        //如果需要展示具体的成功的动作，先要获取场景详情数据
+        TuyaCommunitySDK.getCommunitySceneManager().getSceneDetail(mHomeId, sceneId, new ITuyaCommunityResultCallback<CommunitySceneBean>() {
+            @Override
+            public void onSuccess(CommunitySceneBean communitySceneBean) {
+                ToastUtil.shortToast(mContext, "获取详情数据成功");
+            }
+
+            @Override
+            public void onError(String s, String s1) {
+                ToastUtil.shortToast(mContext, s1);
+            }
+        });
+        //发送命令给云端
         TuyaCommunitySDK.newCommunitySceneInstance(sceneId).executeScene(new ITuyaCommunityCallback() {
             @Override
             public void onError(String code, String error) {
@@ -67,5 +81,35 @@ public class ScenePresenter {
                 ToastUtil.shortToast(mContext, "执行成功");
             }
         });
+    }
+
+    public void enableAuto(String sceneId, boolean isChecked) {
+        if(isChecked){
+            TuyaCommunitySDK.newCommunitySceneInstance(sceneId).enableScene(new ITuyaCommunityCallback() {
+                @Override
+                public void onError(String code, String error) {
+                    ToastUtil.shortToast(mContext, error);
+                }
+
+                @Override
+                public void onSuccess() {
+                    ToastUtil.shortToast(mContext, "启动自动化成功");
+                }
+            });
+        } else {
+            TuyaCommunitySDK.newCommunitySceneInstance(sceneId).disableScene(new ITuyaCommunityCallback() {
+                @Override
+                public void onError(String code, String error) {
+                    ToastUtil.shortToast(mContext, error);
+                }
+
+                @Override
+                public void onSuccess() {
+                    ToastUtil.shortToast(mContext, "停用自动化成功");
+                }
+            });
+        }
+
+
     }
 }

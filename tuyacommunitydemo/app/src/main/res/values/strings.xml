@@ -46,4 +46,5 @@
     <string name="ty_confirm">Confirm</string>
     <string name="ty_cancel">Cancel</string>
     <string name="ty_simple_confirm_title">Tip</string>
+    <string name="close">close</string>
 </resources>
