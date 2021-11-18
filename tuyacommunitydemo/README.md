@@ -78,8 +78,7 @@ repositories {
 
 - Rename the security image as `t_s.bmp` and put the image in the `assets` folder of your project.
 
-
-    <img alt="Get Key"] src="https://images.tuyacn.com/fe-static/docs/img/2de282a3-5498-479e-bb31-3688e3ac1eb2.png" width="300">
+<img alt="Get Key" src="https://images.tuyacn.com/fe-static/docs/img/2de282a3-5498-479e-bb31-3688e3ac1eb2.png" width="300">
 
 - Return to the Android project, configure `appkey` and `appSecret` in `AndroidManifest.xml`, and then set permissions for the app.
 
