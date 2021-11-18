@@ -1,15 +1,30 @@
-
+apply plugin: 'SonarBuild'
 buildscript {
     repositories {
         mavenLocal()
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        //TODO Publish Need Remove
+        maven {
+            url "https://maven.tuya-inc.top/nexus/content/repositories/releases/"
+            mavenContent{
+                releasesOnly()
+            }
+        }
+        maven {
+            url "https://maven.tuya-inc.top/nexus/content/repositories/snapshots"
+        }
+        maven{url 'http://central.maven.org/maven2/'}
+        maven {
+            url "https://maven-other.tuya.com/repository/maven-releases/"
+        }
     }
 
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.tuya.smart.android:sonarBuild:0.0.1-SNAPSHOT'
     }
 }
 
@@ -19,6 +34,20 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        //TODO Publish Need Remove
+        maven {
+            url "https://maven.tuya-inc.top/nexus/content/repositories/releases/"
+            mavenContent{
+                releasesOnly()
+            }
+        }
+        maven {
+            url "https://maven.tuya-inc.top/nexus/content/repositories/snapshots"
+        }
+        maven {
+            url "https://maven-other.tuya.com/repository/maven-releases/"
+        }
+        maven{url 'http://central.maven.org/maven2/'}
     }
 }
 

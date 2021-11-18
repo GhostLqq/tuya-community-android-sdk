@@ -52,6 +52,26 @@ public class Constant {
         activityStacks.clear();
     }
 
+    public static void finishActivity(Class activityClass) {
+        if (activityStack == null) return;
+        ArrayList<WeakReference<Activity>> activityStacks = new ArrayList<WeakReference<Activity>>();
+        int size = activityStack.size();
+        for (int i = size - 1; i >= 0; i--) {
+            WeakReference<Activity> activity = activityStack.get(i);
+            if (activity != null
+                    && activity.get() != null
+                    && activity.get().getClass().getName().equals(activityClass.getName())) {
+                activity.get().finish();
+                activityStacks.add(activity);
+            }
+        }
+
+        for (WeakReference<Activity> activity : activityStacks) {
+            activityStack.remove(activity);
+        }
+        activityStacks.clear();
+    }
+
     public static void attachActivity(Activity activity) {
         WeakReference<Activity> act = new WeakReference<Activity>(activity);
         if (activityStack.indexOf(act) == -1) activityStack.add(act);

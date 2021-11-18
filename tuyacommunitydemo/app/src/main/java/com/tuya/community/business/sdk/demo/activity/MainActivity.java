@@ -1,205 +1,245 @@
 package com.tuya.community.business.sdk.demo.activity;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 
-import com.tuya.community.android.callback.ITuyaCommunityCallback;
-import com.tuya.community.android.home.bean.CommunityHomeBean;
-import com.tuya.community.android.property.bean.CommAnnounceResponseBean;
+import com.tuya.community.android.callback.ITuyaCommunityResultCallback;
+import com.tuya.community.android.house.anntation.TuyaCommunityHouseAuditStatus;
+import com.tuya.community.android.house.bean.TuyaCommunityHouseBean;
+import com.tuya.community.business.sdk.demo.BaseActivity;
 import com.tuya.community.business.sdk.demo.R;
-import com.tuya.community.business.sdk.demo.presenter.HomePresenter;
+import com.tuya.community.business.sdk.demo.house.HouseListActivity;
+import com.tuya.community.business.sdk.demo.smartdoor.SmartDoorListActivity;
+import com.tuya.community.business.sdk.demo.utils.ActivityUtils;
+import com.tuya.community.business.sdk.demo.utils.Constants;
 import com.tuya.community.business.sdk.demo.utils.ToastUtil;
-import com.tuya.community.business.sdk.demo.view.IMainView;
+import com.tuya.community.business.sdk.demo.utils.Utils;
+import com.tuya.community.business.sdk.demo.visitor.VisitorActivity;
+import com.tuya.community.business.sdk.demo.visualspeak.VisualSpeakMainActivity;
 import com.tuya.community.sdk.android.TuyaCommunitySDK;
-import com.tuya.smart.android.common.utils.L;
-import com.tuya.smart.sdk.bean.DeviceBean;
+import com.tuya.sdk.os.TuyaOSUser;
+import com.tuya.smart.android.user.api.ILogoutCallback;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, IMainView {
+public class MainActivity extends BaseActivity {
 
-    private View mBtn_home_list;
-    private View mBtn_home_detail;
-    private HomePresenter mPresenter;
-    private TextView mTv_home_list;
-    private EditText mEt_homeId;
-    private TextView mTv_home_detail;
-    private EditText mEt_devId;
-    private EditText mEt_projectId;
-    private EditText mEt_spaceTreeId;
-    private Button mBtn_dev_oprate;
-    private Button mBtn_push;
-    private Button mBtn_scene;
-    private Button mBtn_property_list;
-    private Button mBtn_property_url;
-    private Button mBtn_smartcall;
-    private Button mBtn_visual_speak;
-    private TextView mTv_Property_list;
-    private EditText mEt_AnnouncementId;
+    TextView tvDetail;
+    EditText etHouseId, etCommunityId, etRoomId;
+    long houseId = 0;
+    String communityId = "";
+    String roomId = "";
+    String roomUserId = "";
+    TuyaCommunityHouseBean currentHouseBean;
 
+    public static final String COMMUNITY_ID = "community_id";
+    public static final String ROOM_ID = "room_id";
+    public static final String VISITOR_ID = "visitor_id";
+    public static final String ROOM_USER_ID = "room_user_id";
+    public static final String IS_USER_FACE = "is_user_face";
+    public static final String IS_UPLOAD = "is_upload";
+
+
+    public static void actionStart(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        ActivityUtils.startActivity((Activity) context, intent, ActivityUtils.ANIMATE_FORWARD, false);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initToolbar();
         initView();
-        initData();
+        getHouseList(false);
+        initListener();
+        initToolbar();
     }
 
     @Override
-    public boolean needLogin() {
-        return true;
+    protected void onResume() {
+        super.onResume();
     }
 
-    private void initView() {
-        mBtn_home_list = findViewById(R.id.btn_home_list);
-        mTv_home_list = findViewById(R.id.tv_home_list);
-        mEt_homeId = findViewById(R.id.et_homeId);
-        mBtn_home_list.setOnClickListener(this);
-        mBtn_home_detail = findViewById(R.id.btn_home_detail);
-        mBtn_home_detail.setOnClickListener(this);
-        mTv_home_detail = findViewById(R.id.tv_detail);
-        mEt_devId = findViewById(R.id.et_devId);
-        mBtn_dev_oprate = findViewById(R.id.btn_dev_oprate);
-        mBtn_dev_oprate.setOnClickListener(this);
-        mBtn_push = findViewById(R.id.btn_push);
-        mBtn_push.setOnClickListener(this);
-        mBtn_scene = findViewById(R.id.btn_scene);
-        mBtn_scene.setOnClickListener(this);
-        mBtn_property_list = findViewById(R.id.btn_property_list);
-        mBtn_property_list.setOnClickListener(this);
-        mBtn_property_url = findViewById(R.id.btn_property_url);
-        mBtn_property_url.setOnClickListener(this);
-        mBtn_smartcall = findViewById(R.id.btn_smartcall);
-        mBtn_smartcall.setOnClickListener(this);
-        mBtn_visual_speak = findViewById(R.id.btn_visualspeak);
-        mEt_projectId = findViewById(R.id.et_projectId);
-        mEt_spaceTreeId = findViewById(R.id.et_spaceTreeId);
-        mTv_Property_list = findViewById(R.id.tv_property_list);
-        mEt_AnnouncementId = findViewById(R.id.et_announcementId);
-        mBtn_visual_speak.setOnClickListener(this);
-        mEt_projectId = findViewById(R.id.et_projectId);
-        mEt_spaceTreeId = findViewById(R.id.et_spaceTreeId);
-
-    }
-
-    private void initData() {
-        mPresenter = new HomePresenter(this, this);
-        //获取一个默认家庭
-        mPresenter.getHomeList();
-        setDisplayHomeAsUpEnabled(new View.OnClickListener() {
+    private void getHouseList(boolean click) {
+        TuyaCommunitySDK.getHouseManagerInstance().getHouseList(new ITuyaCommunityResultCallback<ArrayList<TuyaCommunityHouseBean>>() {
             @Override
-            public void onClick(View v) {
-                TuyaCommunitySDK.getCommunityUserInstance().logout(new ITuyaCommunityCallback() {
-                    @Override
-                    public void onError(String s, String s1) {
-
+            public void onSuccess(ArrayList<TuyaCommunityHouseBean> list) {
+                if (list.size() > 0) {
+                    currentHouseBean = list.get(0);
+                    if (currentHouseBean.isGuestHouse()) {
+                        if (click) HouseListActivity.addHouse(MainActivity.this);
+                    } else {
+                        setHouseInfo(currentHouseBean);
                     }
+                }
+            }
 
-                    @Override
-                    public void onSuccess() {
-                    }
-                });
+            @Override
+            public void onFailure(String s, String s1) {
+                if (s != null) {
+
+                }
             }
         });
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.btn_home_list) {
-            mPresenter.getHomeList();
-        } else if (v.getId() == R.id.btn_home_detail) {
-            if (!TextUtils.isEmpty(mEt_homeId.getText().toString())) {
-                long homeId = Long.parseLong(mEt_homeId.getText().toString());
-                mPresenter.getHomeDetail(homeId);
-            }
-        } else if (v.getId() == R.id.btn_dev_oprate) {
-            if (!TextUtils.isEmpty(mEt_devId.getText().toString())) {
-                String devId = mEt_devId.getText().toString();
-                mPresenter.gotoDevOperate(devId);
-            }
-        } else if (v.getId() == R.id.btn_push) {
-            mPresenter.gotoPush();
-        } else if (v.getId() == R.id.btn_scene) {
-            mPresenter.gotoScene();
-        } else if (v.getId() == R.id.btn_property_list) {
-            if (!TextUtils.isEmpty(mEt_spaceTreeId.getText()) && !TextUtils.isEmpty(mEt_projectId.getText()))
-                mPresenter.getPropertyList(mEt_projectId.getText().toString(), mEt_spaceTreeId.getText().toString());
-        } else if (v.getId() == R.id.btn_property_url) {
-            if (!TextUtils.isEmpty(mEt_AnnouncementId.getText().toString()) && !TextUtils.isEmpty(mEt_projectId.getText().toString())) {
-                String url = mPresenter.getPropertyDetailUrl(mEt_AnnouncementId.getText().toString(), mEt_projectId.getText().toString());
-                mPresenter.openUrl(url);
-            }
-        } else if (v.getId() == R.id.btn_visualspeak) {
-            String projectId = mEt_projectId.getText().toString();
-            String spaceTreeId = mEt_spaceTreeId.getText().toString();
-            if (!TextUtils.isEmpty(projectId) && !TextUtils.isEmpty(spaceTreeId)) {
-                mPresenter.gotoVisualSpeak(projectId, spaceTreeId);
-            }
-        } else if (v.getId() == R.id.btn_smartcall) {
-            String projectId = mEt_projectId.getText().toString();
-            String spaceTreeId = mEt_spaceTreeId.getText().toString();
-            if (!TextUtils.isEmpty(projectId) && !TextUtils.isEmpty(spaceTreeId)) {
-                String smartCallUrl = mPresenter.getSmartCallUrl(projectId, spaceTreeId);
-                mPresenter.openUrl(smartCallUrl);
-            }
+    private void setHouseInfo(TuyaCommunityHouseBean houseBean) {
+        etHouseId.setText(houseBean.getHouseId() + "");
+        houseId = houseBean.getHouseId();
+        Utils.setCurrentHouseId(houseId);
+        etCommunityId.setText(houseBean.getCommunityId() + "");
+        etRoomId.setText(houseBean.getRoomId() + "");
 
-        }
-
+        roomId = houseBean.getRoomId();
+        communityId = houseBean.getCommunityId();
+        roomUserId = houseBean.getRoomUserId();
+        Utils.setCurrentCommunityId(communityId);
+        Utils.setCurrentRoomId(roomId);
     }
 
-    @Override
-    public void showCommunityHomeBean(List<CommunityHomeBean> result) {
-        StringBuilder builder = new StringBuilder();
-        int i = 0;
-        for (CommunityHomeBean communityHomeBean : result) {
-            if (i == 0) mEt_homeId.setText(communityHomeBean.getHomeId() + "");
-            builder.append("房屋地址：").append(communityHomeBean.getHouseAddress()).append("---").append("房屋数据标示：").append(communityHomeBean.getHomeId()).append("\n");
-            i++;
-        }
-        mTv_home_list.setText(builder.toString());
+    private void getHouseDetail(long houseId) {
+        if (houseId == 0) return;
 
-
-    }
-
-    @Override
-    public void showDetail(CommunityHomeBean result) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("所属房屋:").append(result.getCommunityName() + "").append("\n").append("拥有设备：").append("\n");
-        if (null != result.getDeviceList() && !result.getDeviceList().isEmpty()) {
-            for (DeviceBean deviceBean :
-                    result.getDeviceList()) {
-                builder.append("设备名称：").append(deviceBean.getName()).append("-设备id：").append(deviceBean.getDevId()).append("\n");
+        TuyaCommunitySDK.newHouseInstance(houseId).getHouseDetail(new ITuyaCommunityResultCallback<TuyaCommunityHouseBean>() {
+            @Override
+            public void onSuccess(TuyaCommunityHouseBean houseBean) {
+                if (houseBean != null) {
+                    currentHouseBean = houseBean;
+                    setHouseInfo(houseBean);
+                    refreshHouseInfo(houseBean);
+                }
             }
-        } else {
-            builder.append("0个").append("\n");
-        }
-        builder.append(" 项目id：").append(result.getProjectId()).append("\n");
-        builder.append(" 房屋id(SpaceTreeId)：").append(result.getSpaceTreeId()).append("\n");
-        mEt_projectId.setText(result.getProjectId());
-        mEt_spaceTreeId.setText(result.getSpaceTreeId());
-        if (null != mTv_home_detail) mTv_home_detail.setText(builder.toString());
+
+            @Override
+            public void onFailure(String s, String s1) {
+
+            }
+        });
+        findViewById(R.id.btn_visual_speak).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!TextUtils.isEmpty(communityId) && !TextUtils.isEmpty(roomId)) {
+                    Intent intent = new Intent(MainActivity.this, VisualSpeakMainActivity.class);
+                    intent.putExtra(COMMUNITY_ID, communityId);
+                    intent.putExtra(ROOM_ID, roomId);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
-    @Override
-    public void showPropertyList(ArrayList<CommAnnounceResponseBean> commAnnounceResponseBeans) {
+    private void refreshHouseInfo(TuyaCommunityHouseBean bean) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < commAnnounceResponseBeans.size(); i++) {
-            stringBuilder.append("AnnouncementId: ").append(commAnnounceResponseBeans.get(i).getAnnouncementId()).append("\n").append("公告AnnouncementTitle :").append(commAnnounceResponseBeans.get(i).getAnnouncementTitle()).append("\n");
-            mEt_AnnouncementId.setText(commAnnounceResponseBeans.get(i).getAnnouncementId());
+        stringBuilder.append("community: ").append(bean.getCommunityName());
+        stringBuilder.append("\n");
+        stringBuilder.append("address: ").append(bean.getHouseAddress());
+        stringBuilder.append("\n");
+        stringBuilder.append("status: ").append(TuyaCommunityHouseAuditStatus.Pass == bean.getAuditStatus() ? "pass" :
+                TuyaCommunityHouseAuditStatus.Failure == bean.getAuditStatus() ? "failure" :
+                        TuyaCommunityHouseAuditStatus.MovedOut == bean.getAuditStatus() ? "move out" :
+                                TuyaCommunityHouseAuditStatus.Pending == bean.getAuditStatus() ? "pending" : "pending");
+        tvDetail.setText(stringBuilder.toString());
+    }
+
+    private void initListener() {
+        findViewById(R.id.btn_home_list).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HouseListActivity.actionStart(MainActivity.this, -1);
+            }
+        });
+
+        findViewById(R.id.btn_change_house).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (houseId != 0) {
+                    HouseListActivity.actionStart(MainActivity.this, houseId);
+                }
+            }
+        });
+        findViewById(R.id.btn_visitor).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkEnter()) return;
+                Intent intent = new Intent(MainActivity.this, VisitorActivity.class);
+                intent.putExtra(COMMUNITY_ID, communityId);
+                intent.putExtra(ROOM_ID, roomId);
+                startActivity(intent);
+
+            }
+        });
+        findViewById(R.id.btn_smart_door).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkEnter()) return;
+                Intent intent = new Intent(MainActivity.this, SmartDoorListActivity.class);
+                intent.putExtra(COMMUNITY_ID, communityId);
+                intent.putExtra(ROOM_ID, roomId);
+                startActivity(intent);
+
+            }
+        });
+        findViewById(R.id.btn_login_out).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TuyaOSUser.getUserInstance().logout(new ILogoutCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Utils.setCurrentHouseId(0);
+                        checkLogin();
+                    }
+
+                    @Override
+                    public void onError(String errorCode, String errorMsg) {
+                    }
+                });
+            }
+        });
+
+        findViewById(R.id.btn_get_house).setOnClickListener(v -> {
+            getHouseList(true);
+        });
+
+        findViewById(R.id.btn_home_detail).setOnClickListener(v -> {
+            getHouseDetail(houseId);
+        });
+    }
+
+    private boolean checkEnter() {
+        if (TextUtils.isEmpty(communityId) || TextUtils.isEmpty(roomId)) {
+            return true;
         }
-        mTv_Property_list.setText(stringBuilder.toString());
+
+        if (currentHouseBean.getAuditStatus() != TuyaCommunityHouseAuditStatus.Pass) {
+            ToastUtil.shortToast(MainActivity.this, "The current house has not been approved");
+            return true;
+        }
+        return false;
+    }
+
+    private void initView() {
+        etHouseId = findViewById(R.id.et_homeId);
+        etCommunityId = findViewById(R.id.et_projectId);
+        etRoomId = findViewById(R.id.et_spaceTreeId);
+        tvDetail = findViewById(R.id.tv_detail);
     }
 
     @Override
-    public void showFailed(String error) {
-        ToastUtil.shortToast(this, error);
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.CHANGE_HOUSE_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (null != data) {
+                long house_id = data.getLongExtra("house_id", -1);
+                getHouseDetail(house_id);
+            }
+        }
     }
 }

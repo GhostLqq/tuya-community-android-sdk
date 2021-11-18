@@ -2,9 +2,6 @@ package com.tuya.community.business.sdk.demo.adapter;
 
 import android.view.View;
 
-/**
- * Created by mikeshou on 15/5/11.
- */
 public abstract class ViewHolder<T> {
 
     protected View contentView;

@@ -2078,8 +2078,8 @@ public class NumberPicker extends LinearLayout {
         public static final int BUTTON_INCREMENT = 1;
         public static final int BUTTON_DECREMENT = 2;
 
-        private final int MODE_PRESS = 1;
-        private final int MODE_TAPPED = 2;
+        private static final int MODE_PRESS = 1;
+        private static final int MODE_TAPPED = 2;
 
         private int mManagedButton;
         private int mMode;

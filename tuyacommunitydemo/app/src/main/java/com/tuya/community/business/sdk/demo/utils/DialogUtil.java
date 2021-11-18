@@ -18,19 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.tuya.community.business.sdk.demo.R;
 
 
-/**
- * Created by mikeshou on 15/6/16.
- */
 public class DialogUtil {
-
-    /**
-     * 简单的不带标题的提示对话框
-     *
-     * @param context
-     * @param msg
-     * @param msg
-     * @param listener
-     */
     public static void simpleSmartDialog(Context context, CharSequence msg,
                                          final DialogInterface.OnClickListener listener) {
         DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
@@ -51,48 +39,37 @@ public class DialogUtil {
         alertDialog.show();
     }
 
-    /**
-     * 简单的不带标题的提示对话框
-     *
-     * @param context
-     * @param msgResId
-     * @param listener
-     */
+
     public static void simpleSmartDialog(Context context, int msgResId,
                                          final DialogInterface.OnClickListener listener) {
         simpleSmartDialog(context, context.getString(msgResId), listener);
     }
 
-    /**
-     * 简单的返回、退出、删除确认弹窗。回调后系统会隐藏弹窗。一般只需要处理 BUTTON_POSITIVE 情况。
-     *
-     * @param context
-     * @param msg
-     * @param listener
-     */
     public static void simpleConfirmDialog(Context context, CharSequence msg,
-                                           final DialogInterface.OnClickListener listener) {
+                                           final OnClickListener listener) {
         simpleConfirmDialog(context, context.getString(R.string.ty_simple_confirm_title), msg,
                 listener);
     }
 
-    /**
-     * 带标题的确认弹窗
-     *
-     * @param context
-     * @param title
-     * @param msg
-     * @param listener
-     */
+    public interface OnClickListener {
+        void onSureClick();
+
+        void onCancelClick();
+    }
+
     public static void simpleConfirmDialog(Context context, String title, CharSequence msg,
-                                           final DialogInterface.OnClickListener listener) {
+                                           final OnClickListener listener) {
         DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 if (listener != null) {
-                    listener.onClick(dialog, which);
+                    if (which == DialogInterface.BUTTON_NEGATIVE) {
+                        listener.onCancelClick();
+                    } else if (which == DialogInterface.BUTTON_POSITIVE) {
+                        listener.onSureClick();
+                    }
                 }
             }
         };
@@ -105,14 +82,6 @@ public class DialogUtil {
         dialog.create().show();
     }
 
-    /**
-     * 简单的确认提示对话框
-     *
-     * @param context
-     * @param msg
-     * @param msg
-     * @param listener
-     */
     public static void simpleTipDialog(Context context, CharSequence msg,
                                        final DialogInterface.OnClickListener listener) {
         DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
@@ -133,12 +102,6 @@ public class DialogUtil {
         dialog.create().show();
     }
 
-    /**
-     * 输入对话框，支持简单的单行文案输入
-     *
-     * @param context
-     * @param listener
-     */
     public static void simpleInputDialog(Context context, String title, CharSequence text,
                                          boolean isHint,
                                          final SimpleInputDialogInterface listener) {
@@ -181,12 +144,6 @@ public class DialogUtil {
         dialog.create().show();
     }
 
-    /**
-     * 带message的输入对话框，支持简单的单行文案输入
-     *
-     * @param context
-     * @param listener
-     */
     public static void simpleInputDialog(Context context, String title, String message, CharSequence text,
                                          boolean isHint,
                                          final SimpleInputDialogInterface listener) {
@@ -238,14 +195,6 @@ public class DialogUtil {
         public void onNegative(DialogInterface dialog);
     }
 
-    /**
-     * list查看选择对话框，用于用户选择操作项中。
-     *
-     * @param context
-     * @param title
-     * @param items
-     * @param listener
-     */
     public static void listSelectDialog(Context context, String title, String[] items,
                                         final AdapterView.OnItemClickListener listener) {
         customerListSelectDialog(context, title, new ArrayAdapter<String>(context,
@@ -253,14 +202,6 @@ public class DialogUtil {
                 items), listener);
     }
 
-    /**
-     * 文字居中显示的选择列表
-     *
-     * @param context
-     * @param title
-     * @param items
-     * @param listener
-     */
     public static void listSelectDialogCenter(Context context, String title, String[] items,
                                               final AdapterView.OnItemClickListener listener) {
         customerListSelectDialogTitleCenter(context, title, new ArrayAdapter<String>(context,
@@ -268,14 +209,6 @@ public class DialogUtil {
                 items), listener);
     }
 
-    /**
-     * 用户自定义列表对话框
-     *
-     * @param context
-     * @param title
-     * @param adapter
-     * @param listener
-     */
     public static void customerListSelectDialog(Context context, String title, ListAdapter adapter,
                                                 final AdapterView.OnItemClickListener listener) {
         AlertDialog.Builder dialog = UIFactory.buildAlertDialog(context);
@@ -303,14 +236,6 @@ public class DialogUtil {
         create.show();
     }
 
-    /**
-     * 标题和文字都居中的选择列表
-     *
-     * @param context
-     * @param title
-     * @param adapter
-     * @param listener
-     */
     public static void customerListSelectDialogTitleCenter(Context context, String title, ListAdapter adapter,
                                                            final AdapterView.OnItemClickListener listener) {
         AlertDialog.Builder dialog = UIFactory.buildAlertDialog(context);
@@ -340,14 +265,6 @@ public class DialogUtil {
         create.show();
     }
 
-    /**
-     * 单项选择对话框
-     *
-     * @param context
-     * @param title
-     * @param items
-     * @param listener
-     */
     public static void singleChoiceDialog(Context context, String title, String[] items,
                                           int checkedItem,
                                           final SingleChoiceDialogInterface listener) {
@@ -396,14 +313,6 @@ public class DialogUtil {
         public void onNegative(DialogInterface dialog);
     }
 
-    /**
-     * 多项选择对话框
-     *
-     * @param context
-     * @param title
-     * @param items
-     * @param listener
-     */
     public static void multiChoiceDialog(Context context, String title, String[] items,
                                          boolean[] checkedItems, final MultiChoiceDialogInterface listener) {
         final boolean[] realTimecheckedItems = checkedItems.clone();
@@ -449,15 +358,6 @@ public class DialogUtil {
         public void onNegative(DialogInterface dialog);
     }
 
-    /**
-     * 完全按钮弹窗，可以按照需要定制功能
-     *
-     * @param context
-     * @param title
-     * @param message
-     * @param listener
-     * @return
-     */
     public static AlertDialog customDialog(Context context, String title, CharSequence message,
                                            String positiveButton,
                                            String negativeButton, String neutralButton, DialogInterface.OnClickListener listener

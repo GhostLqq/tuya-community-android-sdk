@@ -1,6 +1,8 @@
 package com.tuya.community.business.sdk.demo.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.TypedValue;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -12,11 +14,7 @@ import java.util.Hashtable;
 
 import static android.graphics.Color.BLACK;
 
-/**
- * create by nielev on 2020/11/11
- */
 public class QRUtils {
-    //生成二维码图片（不带图片）
     public static Bitmap createQRCode(String url, int widthAndHeight)
             throws WriterException {
         Hashtable hints = new Hashtable();
@@ -28,7 +26,6 @@ public class QRUtils {
         int width = matrix.getWidth();
         int height = matrix.getHeight();
         int[] pixels = new int[width * height];
-        //画黑点
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 if (matrix.get(x, y)) {
@@ -40,5 +37,10 @@ public class QRUtils {
                 Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
         return bitmap;
+    }
+
+    public static int dp2px(Context context, float dpVal) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                dpVal, context.getResources().getDisplayMetrics());
     }
 }

@@ -49,21 +49,10 @@ public abstract class BaseListArrayAdapter<E> extends ArrayAdapter<E> {
         return mData;
     }
 
-    /**
-     * 获取当前的view的position
-     *
-     * @return
-     */
     public int getCurrentPosition() {
         return currentPosition;
     }
 
-    /**
-     * 获取数据信息
-     *
-     * @param id
-     * @return
-     */
     public String getString(int id) {
         return mContext.getString(id);
     }

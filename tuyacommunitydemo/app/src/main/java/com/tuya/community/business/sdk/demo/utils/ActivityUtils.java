@@ -8,7 +8,6 @@ import com.tuya.community.business.sdk.demo.R;
 
 
 public class ActivityUtils {
-    //动画标识
     public static final int ANIMATE_FORWARD = 0;
     public static final int ANIMATE_BACK = 1;
 

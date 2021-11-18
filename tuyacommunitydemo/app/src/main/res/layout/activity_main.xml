@@ -4,132 +4,149 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <include layout="@layout/toolbar_top_view"/>
+
+        <include layout="@layout/toolbar_top_view" />
+
         <Button
             android:id="@+id/btn_home_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="获取房屋列表"/>
-        <TextView
-            android:id="@+id/tv_home_list"
+            android:text="@string/my_house_list"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btn_change_house"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textIsSelectable="true"/>
+            android:text="@string/change_house"
+            android:textAllCaps="false" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <EditText
                 android:id="@+id/et_homeId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="请输入房屋homeId："/>
+                android:hint="current house id" />
+
             <Button
-                android:id="@+id/btn_home_detail"
+                android:id="@+id/btn_get_house"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="获取房屋详情"/>
+                android:text="@string/get_house_info"
+                android:textAllCaps="false" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="community id:  "
+                android:textSize="@dimen/ts_16" />
+
+            <EditText
+                android:id="@+id/et_projectId"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="room id:  "
+                android:textSize="@dimen/ts_16" />
+
+            <EditText
+                android:id="@+id/et_spaceTreeId"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_home_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/get_house_detail"
+            android:textAllCaps="false" />
 
         <TextView
             android:id="@+id/tv_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textIsSelectable="true"/>
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:textIsSelectable="true" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
             android:orientation="horizontal">
+
             <EditText
                 android:id="@+id/et_devId"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="请输入设备devId:"/>
+                android:layout_weight="1"
+                android:hint="enter devId:" />
+
             <Button
                 android:id="@+id/btn_dev_oprate"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="进入设备操作页面"/>
+                android:layout_weight="1"
+                android:text="Operate your device"
+                android:textAllCaps="false" />
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_scene"
+            android:id="@+id/btn_visitor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="进入联动场景页面"/>
-        <Button
-            android:id="@+id/btn_push"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="进入推送功能设置页面"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="项目id    "/>
-            <EditText
-                android:id="@+id/et_projectId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:hint="请输入项目id:"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="房屋id(SpaceTreeId)"/>
-            <EditText
-            android:id="@+id/et_spaceTreeId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:hint="请输入房屋spaceTreeId:"/>
-        </LinearLayout>
+            android:layout_marginVertical="@dimen/dp_16"
+            android:text="@string/visitor"
+            android:textAllCaps="false" />
+
 
         <Button
-            android:id="@+id/btn_property_list"
+            android:id="@+id/btn_smart_door"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="获取公告列表"/>
-
-        <TextView
-            android:id="@+id/tv_property_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <EditText
-            android:id="@+id/et_announcementId"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:hint="请输入公告标识id:"
-            android:text="" />
+            android:text="@string/smart_door"
+            android:textAllCaps="false" />
 
         <Button
-            android:id="@+id/btn_property_url"
+            android:id="@+id/btn_visual_speak"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="进入公告详情页"/>
+            android:text="@string/visual_speak"
+            android:textAllCaps="false" />
+
         <Button
-            android:id="@+id/btn_smartcall"
+            android:id="@+id/btn_login_out"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="进入智能梯控"/>
-        <Button
-            android:id="@+id/btn_visualspeak"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="云可视对接"/>
+            android:text="@string/login_out"
+            android:textAllCaps="false" />
 
     </LinearLayout>
 

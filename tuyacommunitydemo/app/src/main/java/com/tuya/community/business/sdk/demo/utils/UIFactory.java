@@ -8,17 +8,8 @@ import androidx.appcompat.app.AlertDialog;
 import com.tuya.community.business.sdk.demo.R;
 
 
-/**
- * Created by mikeshou on 15/6/23.
- */
 public class UIFactory {
 
-    /**
-     * 构造弹窗
-     *
-     * @param context
-     * @return
-     */
     public static AlertDialog.Builder buildAlertDialog(Context context) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context, R.style.Dialog_Alert);
         return dialog;
