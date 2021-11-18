@@ -1,6 +1,6 @@
 # 涂鸦智慧社区 App SDK Android 版示例
 
----
+[English](./README.md) | [中文文档](./README_zh.md)
 
 ## 简介
 涂鸦智慧社区 App SDK Android 版是一套针对智慧社区提供的移动端开发工具。通过智慧社区 SDK，Android 开发者可以基于 SDK 快速实现社区相关的 App 功能开发。
